@@ -1,15 +1,15 @@
 Pod::Spec.new do |s|
-  s.name         = "ios-linechart"
+  s.name         = "ios-linechart-2"
   s.version      = "1.3.2"
-  s.summary      = "Interactive line charts / plots for the simplicity-loving iOS developer."
-  s.homepage     = "https://github.com/mruegenberg/ios-linechart"
-  s.screenshots  = "https://raw.github.com/mruegenberg/ios-linechart/master/doc/screenshot1.png", "https://raw.github.com/mruegenberg/ios-linechart/master/doc/screenshot2.png"
+  s.summary      = "Interactive line charts / plots for the simplicity-loving iOS developer. This was forked from https://github.com/mruegenberg/ios-linechart"
+  s.homepage     = "https://github.com/claudiuvintila/ios-linechart"
+  s.screenshots  = "https://raw.github.com/claudiuvintila/ios-linechart/master/doc/screenshot1.png", "https://raw.github.com/claudiuvintila/ios-linechart/master/doc/screenshot2.png"
 
   s.license      =  { :type => 'MIT', :file => 'LICENSE' }
 
-  s.author       = { "Marcel Ruegenberg" => "github@dustlab.com" }
+  s.author       = { "Marcel Ruegenberg" => "github@dustlab.com" , "Claudiu Vintila" => "claudiu.vintila.com" }
 
-  s.source       = { :git => "https://github.com/mruegenberg/ios-linechart.git", :tag => s.version }
+  s.source       = { :git => "https://github.com/claudiuvintila/ios-linechart.git", :tag => s.version }
 
   s.platform     = :ios, '5.1'
 
