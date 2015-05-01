@@ -32,6 +32,10 @@ typedef void(^LCLineChartDeselectedPoint)();
 
 @property BOOL drawsDataPoints;
 @property (strong) UIColor *color;
+@property double lineWidth;
+@property double pointSize;
+@property double pointFillSize;
+@property double pointMarginSize;
 @property (copy) NSString *title;
 @property NSUInteger itemCount;
 

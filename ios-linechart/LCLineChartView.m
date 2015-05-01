@@ -21,6 +21,14 @@
 
 @end
 
+@interface LCLineChartData ()
+
+@property double pointRadius;
+@property double pointFillRadius;
+@property double pointMarginRadius;
+
+@end
+
 @implementation LCLineChartDataItem
 
 - (id)initWithhX:(double)x y:(double)y xLabel:(NSString *)xLabel dataLabel:(NSString *)dataLabel {
@@ -40,15 +48,66 @@
 @end
 
 
-
 @implementation LCLineChartData
+@synthesize pointSize = _pointSize;
+@synthesize pointRadius;
+
+@synthesize pointFillSize = _pointFillSize;
+@synthesize pointFillRadius;
+
+@synthesize pointMarginSize = _pointMarginSize;
+@synthesize pointMarginRadius;
 
 - (id)init {
-  self = [super init];
-  if(self) {
-    self.drawsDataPoints = YES;
-  }
-  return self;
+    self = [super init];
+    if(self) {
+        self.drawsDataPoints = YES;
+
+        self.lineWidth = 2.f;
+        self.pointSize = 8.f;
+        self.pointFillSize = 4.f;
+
+        self.pointMarginSize = self.pointSize * 1.35f;
+    }
+    return self;
+}
+
+- (void) setPointSize:(double)pointSize
+{
+    _pointSize = pointSize;
+
+    self.pointRadius = pointSize / 2.f;
+}
+
+- (double) pointSize
+{
+    return _pointSize;
+}
+
+
+- (void) setPointFillSize:(double)pointFillSize
+{
+    _pointFillSize = pointFillSize;
+
+    self.pointFillRadius = pointFillSize / 2.f;
+}
+
+- (double) pointFillSize
+{
+    return _pointFillSize;
+}
+
+
+- (void) setPointMarginSize:(double)pointMarginSize
+{
+    _pointMarginSize = pointMarginSize;
+
+    self.pointMarginRadius = pointMarginSize / 2.f;
+}
+
+- (double) pointMarginSize
+{
+    return _pointMarginSize;
 }
 
 @end
@@ -277,46 +336,46 @@
 
                 CGContextAddPath(c, path);
                 CGContextSetStrokeColorWithColor(c, [self.backgroundColor CGColor]);
-                CGContextSetLineWidth(c, 5);
+                CGContextSetLineWidth(c, data.lineWidth + 3);
                 CGContextStrokePath(c);
 
                 CGContextAddPath(c, path);
                 CGContextSetStrokeColorWithColor(c, [data.color CGColor]);
-                CGContextSetLineWidth(c, 2);
+                CGContextSetLineWidth(c, data.lineWidth);
                 CGContextStrokePath(c);
 
                 CGPathRelease(path);
             }
         } // draw actual chart data
         if (self.drawsDataPoints) {
-          if (data.drawsDataPoints) {
-            double xRangeLen = data.xMax - data.xMin;
-            if(xRangeLen == 0) xRangeLen = 1;
-            for(NSUInteger i = 0; i < data.itemCount; ++i) {
-                LCLineChartDataItem *datItem = data.getData(i);
-                CGFloat xVal = xStart + round((xRangeLen == 0 ? 0.5 : ((datItem.x - data.xMin) / xRangeLen)) * availableWidth);
-                CGFloat yVal = yStart + round((1.0 - (datItem.y - self.yMin) / yRangeLen) * availableHeight);
-                [self.backgroundColor setFill];
-                CGContextFillEllipseInRect(c, CGRectMake(xVal - 5.5, yVal - 5.5, 11, 11));
-                [data.color setFill];
-                CGContextFillEllipseInRect(c, CGRectMake(xVal - 4, yVal - 4, 8, 8));
-                {
-                    CGFloat brightness;
-                    CGFloat r,g,b,a;
-                    if(CGColorGetNumberOfComponents([data.color CGColor]) < 3)
-                        [data.color getWhite:&brightness alpha:&a];
-                    else {
-                        [data.color getRed:&r green:&g blue:&b alpha:&a];
-                        brightness = 0.299 * r + 0.587 * g + 0.114 * b; // RGB ~> Luma conversion
+            if (data.drawsDataPoints) {
+                double xRangeLen = data.xMax - data.xMin;
+                if(xRangeLen == 0) xRangeLen = 1;
+                for(NSUInteger i = 0; i < data.itemCount; ++i) {
+                    LCLineChartDataItem *datItem = data.getData(i);
+                    CGFloat xVal = xStart + round((xRangeLen == 0 ? 0.5 : ((datItem.x - data.xMin) / xRangeLen)) * availableWidth);
+                    CGFloat yVal = yStart + round((1.0 - (datItem.y - self.yMin) / yRangeLen) * availableHeight);
+                    [self.backgroundColor setFill];
+                    CGContextFillEllipseInRect(c, CGRectMake(xVal - data.pointMarginRadius, yVal - data.pointMarginRadius, data.pointMarginSize, data.pointMarginSize));
+                    [data.color setFill];
+                    CGContextFillEllipseInRect(c, CGRectMake(xVal - data.pointRadius, yVal - data.pointRadius, data.pointSize, data.pointSize));
+                    {
+                        CGFloat brightness;
+                        CGFloat r,g,b,a;
+                        if(CGColorGetNumberOfComponents([data.color CGColor]) < 3)
+                            [data.color getWhite:&brightness alpha:&a];
+                        else {
+                            [data.color getRed:&r green:&g blue:&b alpha:&a];
+                            brightness = 0.299 * r + 0.587 * g + 0.114 * b; // RGB ~> Luma conversion
+                        }
+                        if(brightness <= 0.68) // basically arbitrary, but works well for test cases
+                            [[UIColor whiteColor] setFill];
+                        else
+                            [[UIColor blackColor] setFill];
                     }
-                    if(brightness <= 0.68) // basically arbitrary, but works well for test cases
-                        [[UIColor whiteColor] setFill];
-                    else
-                        [[UIColor blackColor] setFill];
-                }
-                CGContextFillEllipseInRect(c, CGRectMake(xVal - 2, yVal - 2, 4, 4));
-            } // for
-          } // data - draw data points
+                    CGContextFillEllipseInRect(c, CGRectMake(xVal - data.pointFillRadius, yVal - data.pointFillRadius, data.pointFillSize, data.pointFillSize));
+                } // for
+            } // data - draw data points
         } // draw data points
     }
 }
@@ -357,18 +416,18 @@
                 minDistY = distY;
                 closest = datItem;
                 closestPos = CGPointMake(xStart + xVal - 3, yStart + yVal - 7);
-                
+
                 graph = data;
             }
         }
     }
-    
+
     if(graph.notifySelectedPoint != nil) {
         graph.notifySelectedPoint(closest);
     }
 
     graph = nil;
-    
+
     self.infoView.infoLabel.text = closest.dataLabel;
     self.infoView.tapPoint = closestPos;
     [self.infoView sizeToFit];
@@ -404,7 +463,7 @@
     if(self.notifyDeselectedPoint != nil) {
         self.notifyDeselectedPoint();
     }
-    
+
     [UIView animateWithDuration:0.1 animations:^{
         self.infoView.alpha = 0.0;
         self.currentPosView.alpha = 0.0;
