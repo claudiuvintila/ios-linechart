@@ -409,8 +409,8 @@
             CGFloat xVal = round((xRangeLen == 0 ? 0.0 : ((datItem.x - data.xMin) / xRangeLen)) * availableWidth);
             CGFloat yVal = round((1.0 - (datItem.y - self.yMin) / yRangeLen) * availableHeight);
 
-            double dist = fabsf(xVal - xPos);
-            double distY = fabsf(yVal - yPos);
+            double dist = fabs(xVal - xPos);
+            double distY = fabs(yVal - yPos);
             if(dist < minDist || (dist == minDist && distY < minDistY)) {
                 minDist = dist;
                 minDistY = distY;
