@@ -180,6 +180,11 @@
     return self;
 }
 
+-(void)dealloc
+{
+    [self hideIndicator];
+}
+
 - (void)setAxisLabelColor:(UIColor *)axisLabelColor {
     if(axisLabelColor != _axisLabelColor) {
         [self willChangeValueForKey:@"axisLabelColor"];
