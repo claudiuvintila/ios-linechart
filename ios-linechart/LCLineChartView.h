@@ -11,7 +11,7 @@
 @class LCLineChartDataItem;
 
 typedef LCLineChartDataItem *(^LCLineChartDataGetter)(NSUInteger item);
-typedef void(^LCLineChartSelectedPoint)(LCLineChartDataItem * dateItem);
+typedef void(^LCLineChartSelectedPoint)(LCLineChartDataItem * dateItem, NSUInteger idx);
 typedef void(^LCLineChartDeselectedPoint)();
 
 

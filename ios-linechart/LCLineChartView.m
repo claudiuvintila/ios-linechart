@@ -134,8 +134,8 @@
 @synthesize data=_data;
 
 - (void)setDefaultValues {
-    self.currentPosView = [[UIView alloc] initWithFrame:CGRectMake(PADDING, PADDING, 1 / self.contentScaleFactor, 50)];
-    self.currentPosView.backgroundColor = [UIColor colorWithRed:0.7 green:0.0 blue:0.0 alpha:1.0];
+    self.currentPosView = [[UIView alloc] initWithFrame:CGRectMake(PADDING, PADDING, 5 / self.contentScaleFactor, 50)];
+    self.currentPosView.backgroundColor = [UIColor colorWithRed:0 green:179/255.0 blue:140/255.0 alpha:1.0];
     self.currentPosView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     self.currentPosView.alpha = 0.0;
     [self addSubview:self.currentPosView];
@@ -179,7 +179,6 @@
     }
     return self;
 }
-
 -(void)dealloc
 {
     [self hideIndicator];
@@ -214,7 +213,7 @@
 
     r = self.currentPosView.frame;
     CGFloat h = self.bounds.size.height;
-    r.size.height = h - 2 * PADDING - X_AXIS_SPACE;
+    r.size.height = h ;// - 2 * PADDING - X_AXIS_SPACE;
     self.currentPosView.frame = r;
 
     [self.xAxisLabel sizeToFit];
@@ -386,11 +385,12 @@
 }
 
 - (void)showIndicatorForTouch:(UITouch *)touch {
-    if(! self.infoView) {
+  
+    /*if(! self.infoView) {
         self.infoView = [[LCInfoView alloc] init];
         [self addSubview:self.infoView];
     }
-
+*/
     CGPoint pos = [touch locationInView:self];
     CGFloat xStart = PADDING + self.yAxisLabelsWidth;
     CGFloat yStart = PADDING;
@@ -406,6 +406,7 @@
     double minDist = DBL_MAX;
     double minDistY = DBL_MAX;
     CGPoint closestPos = CGPointZero;
+    NSUInteger closestIdx = -1;
 
     for(LCLineChartData *data in self.data) {
         double xRangeLen = data.xMax - data.xMin;
@@ -421,6 +422,7 @@
                 minDistY = distY;
                 closest = datItem;
                 closestPos = CGPointMake(xStart + xVal - 3, yStart + yVal - 7);
+                closestIdx = i;
 
                 graph = data;
             }
@@ -428,7 +430,7 @@
     }
 
     if(graph.notifySelectedPoint != nil) {
-        graph.notifySelectedPoint(closest);
+        graph.notifySelectedPoint(closest, closestIdx);
     }
 
     graph = nil;
